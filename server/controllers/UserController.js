@@ -1,8 +1,10 @@
-import { validateSignup } from "@validations/auth";
+import { validateSignup, validateLogin } from "@validations/auth";
 import { validateUniqueResponse, validationResponse } from "@helpers/validationResponse";
 import models from "@models"
 import { config } from 'dotenv';
 import jwt from "jsonwebtoken"
+import Response from "@helpers/Response"
+import bcrypt from "bcrypt"
 
 const { User } = models
 
@@ -24,9 +26,7 @@ class UserController {
                 expiresIn: tokenExpiration
             });
 
-            return res.status(200).json({
-                user, token
-            });
+            return Response.success(res, 201, { user, token }, "The user has been created successfully");
 
         } catch (err) {
             if (err.isJoi && err.name === 'ValidationError') {
@@ -40,6 +40,36 @@ class UserController {
                 return res.status(400).json({
                     status: 400,
                     errors: validateUniqueResponse(err)
+                });
+            }
+            next(err);
+        }
+
+    }
+
+    static async login(req, res, next) {
+        try {
+            const userDetails = await validateLogin(req.body);
+            const user = await User.findOne({ where: { email: userDetails.email } });
+            if (!user) { return Response.error(res, 400, "Email or Password is not correct") };
+            const match = await bcrypt.compare(userDetails.password, user.password);
+            if (!match) { return Response.error(res, 400, "Email or Password is not correct") };
+
+            const payload = {
+                id: user.id,
+                email: user.email
+            };
+            const token = await jwt.sign(payload, tokenSecret, {
+                expiresIn: tokenExpiration
+            });
+
+            return Response.success(res, 200, { user, token }, "You have been logged in successfully");
+
+        } catch (err) {
+            if (err.isJoi && err.name === 'ValidationError') {
+                return res.status(400).json({
+                    status: 400,
+                    errors: validationResponse(err)
                 });
             }
             next(err);
