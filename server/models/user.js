@@ -17,11 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false
       },
-      firstname: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      lastname: {
+      fullname: {
         type: DataTypes.STRING,
         allowNull: false
       },
@@ -31,15 +27,6 @@ module.exports = (sequelize, DataTypes) => {
         unique: true
       },
       password: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      active: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-        defaultValue: false
-      },
-      phone: {
         type: DataTypes.STRING,
         allowNull: false
       }
@@ -52,43 +39,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   User.associate = (models) => {
-    const {
-      Address, Promotion, Rating, Order, Product
-    } = models;
 
-    User.hasMany(Address, {
-      foreignKey: "userId",
-      as: "address"
-    });
-
-    User.hasMany(Promotion, {
-      foreignKey: "userId",
-      as: "promotion"
-    });
-
-    User.hasMany(Rating, {
-      foreignKey: "userId",
-      as: "rating"
-    });
-
-    User.hasMany(Order, {
-      foreignKey: "userId",
-      as: "order"
-    });
-
-    User.belongsToMany(Promotion, {
-      foreignKey: "userId",
-      otherKey: "promotionId",
-      through: "UserPromotion",
-      as: "promotion"
-    });
-
-    User.belongsToMany(Product, {
-      foreignKey: "userId",
-      otherKey: "productId",
-      through: "Rating",
-      as: "rating"
-    });
   };
   User.hashPassword = async (user) => {
     const changedDbValue = await user.changed(
