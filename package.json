@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node ./dist/server.js",
     "start:dev": "DEBUG=app nodemon ./server/server.js --exec babel-node",
-    "dev": "DEBUG=app nodemon ./server/server.js --exec babel-node",
     "migrate": "sequelize db:migrate",
     "migrate:undo:all": "sequelize db:migrate:undo:all",
     "migrate:undo": "sequelize db:migrate:undo",
