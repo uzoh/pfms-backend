@@ -5,12 +5,9 @@ import { config } from 'dotenv';
 import jwt from "jsonwebtoken"
 import Response from "@helpers/Response"
 import bcrypt from "bcrypt"
+import Token from "@middlewares/Token";
 
 const { User } = models
-
-config();
-const tokenSecret = process.env.SECRET || 'secret';
-const tokenExpiration = process.env.TOKEN_EXPIRE || '1d';
 
 class UserController {
     static async create(req, res, next) {
@@ -22,9 +19,7 @@ class UserController {
                 id: user.id,
                 email: user.email
             };
-            const token = await jwt.sign(payload, tokenSecret, {
-                expiresIn: tokenExpiration
-            });
+            const token = await Token.create(payload);
 
             return Response.success(res, 201, { user, token }, "The user has been created successfully");
 
@@ -59,9 +54,7 @@ class UserController {
                 id: user.id,
                 email: user.email
             };
-            const token = await jwt.sign(payload, tokenSecret, {
-                expiresIn: tokenExpiration
-            });
+            const token = await Token.create(payload);
 
             return Response.success(res, 200, { user, token }, "You have been logged in successfully");
 
@@ -74,8 +67,10 @@ class UserController {
             }
             next(err);
         }
-
     }
+
+
+
 }
 
 export default UserController;
