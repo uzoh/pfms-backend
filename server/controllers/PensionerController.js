@@ -55,5 +55,18 @@ class PensionerController {
             return Response.error(res, 404, "Pensioner does not exist");
         }
     }
+
+    static async getSpecificPensioner(req, res, next) {
+        try {
+            const { pensionerID } = req.params
+
+            const pensioner = await Pensioner.findOne({ where: { id: pensionerID } });
+            if (!pensioner) return Response.error(res, 404, "Pensioner does not exist");
+            return Response.success(res, 200, pensioner, "Pensioner Found");
+
+        } catch (error) {
+            return Response.error(res, 404, "Pensioner does not exist");
+        }
+    }
 }
 export default PensionerController;
