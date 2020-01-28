@@ -34,5 +34,17 @@ class PensionerController {
         }
 
     }
+
+    
+    static async getall(req, res, next) {
+        try {
+            const pensioner = await Pensioner.findAll();
+            return Response.success(res, 200, pensioner);
+
+        } catch (error) {
+            return Response.error(res, 500, error);
+        }
+    }
+    
 }
 export default PensionerController;
