@@ -1,9 +1,6 @@
 import { validateUniqueResponse, validationResponse } from "@helpers/validationResponse";
 import models from "@models"
-import { config } from 'dotenv';
-import jwt from "jsonwebtoken"
 import Response from "@helpers/Response"
-import bcrypt from "bcrypt"
 import { validateCreatePensioner } from "@validations/pensioner";
 
 const { Pensioner } = models
@@ -35,7 +32,6 @@ class PensionerController {
 
     }
 
-    
     static async getall(req, res, next) {
         try {
             const pensioner = await Pensioner.findAll();
@@ -45,6 +41,19 @@ class PensionerController {
             return Response.error(res, 500, error);
         }
     }
-    
+
+    static async delete(req, res, next) {
+        try {
+            const { pensionerID } = req.params
+
+            const pensioner = await Pensioner.findOne({ where: { id: pensionerID } });
+            if (!pensioner) return Response.error(res, 404, "Pensioner does not exist");
+            await pensioner.destroy();
+
+            return Response.success(res, 200, pensioner, "Pensioner has been deleted");
+        } catch (error) {
+            return Response.error(res, 404, "Pensioner does not exist");
+        }
+    }
 }
 export default PensionerController;

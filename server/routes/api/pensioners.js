@@ -6,6 +6,6 @@ const pensionersRouter = express.Router();
 
 pensionersRouter.post("/", Token.authorize, PensionerController.create);
 pensionersRouter.get("/", Token.authorize, PensionerController.getall)
-//pensionersRouter.delete("/", PensionerController.delete);
+pensionersRouter.delete("/:pensionerID",Token.authorize, PensionerController.delete);
 
 export default pensionersRouter;
