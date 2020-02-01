@@ -41,3 +41,31 @@ export const validateCreatePensioner = (pensioner) => {
     };
     return validateSchema(pensioner, schema);
 };
+export const validateUpdatePensioner = (pensioner) => {
+    const schema = {
+        fullname: Joi.string().trim().lowercase().min(2)
+            .max(100),
+        email: Joi.string().trim().lowercase().min(5)
+            .max(255)
+            .email(),
+        address: Joi.string().trim().min(5).max(255),
+
+        city: Joi.string().trim().lowercase().min(2)
+            .max(100),
+        phone: Joi.string().trim().lowercase().min(2)
+            .max(100),
+        dob: Joi.string().trim().lowercase().min(2)
+            .max(100),
+        gender: Joi.string().trim().lowercase().min(2)
+            .max(100),
+        acctNum: Joi.string().trim().lowercase().min(2)
+            .max(100),
+        bank: Joi.string().trim().lowercase().min(2)
+            .max(100),
+        nextOfKinName: Joi.string().trim().lowercase().min(2)
+            .max(100),
+        nextOfKinPhone: Joi.string().trim().lowercase().min(2)
+            .max(100),
+    };
+    return validateSchema(pensioner, schema);
+};
