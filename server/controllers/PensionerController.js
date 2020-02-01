@@ -1,7 +1,7 @@
 import { validateUniqueResponse, validationResponse } from "@helpers/validationResponse";
 import models from "@models"
 import Response from "@helpers/Response"
-import { validateCreatePensioner } from "@validations/pensioner";
+import { validateCreatePensioner, validateUpdatePensioner } from "@validations/pensioner";
 
 const { Pensioner } = models
 
@@ -68,5 +68,35 @@ class PensionerController {
             return Response.error(res, 404, "Pensioner does not exist");
         }
     }
+
+    static async updatePensioner(req, res, next) {
+        try {
+            const { pensionerID } = req.params
+            const pensionerDetails = await validateUpdatePensioner(req.body);
+            let pensioner = await Pensioner.findOne({ where: { id: pensionerID } });
+            if (!pensioner) return Response.error(res, 404, "Pensioner does not exist");
+            await pensioner.update(pensionerDetails, { where: { id: pensionerID } });
+
+            Response.success(res, 200, pensioner);
+
+        } catch (err) {
+            if (err.isJoi && err.name === 'ValidationError') {
+                return res.status(400).json({
+                    status: 400,
+                    errors: validationResponse(err)
+                });
+            }
+
+            if (err.errors && err.errors[0].type === 'unique violation') {
+                return res.status(400).json({
+                    status: 400,
+                    errors: validateUniqueResponse(err)
+                });
+            }
+            next(err);
+        }
+
+    }
 }
+
 export default PensionerController;
