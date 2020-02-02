@@ -10,5 +10,6 @@ pensionersRouter.delete("/:pensionerID", Token.authorize, PensionerController.de
 pensionersRouter.get("/:pensionerID", Token.authorize, PensionerController.getSpecificPensioner);
 pensionersRouter.put("/:pensionerID", Token.authorize, PensionerController.updatePensioner);
 pensionersRouter.post("/:pensionerID/pay", Token.authorize, PensionerController.pay);
+pensionersRouter.get("/:pensionerID/history", Token.authorize, PensionerController.getPaymentHistory);
 
 export default pensionersRouter;

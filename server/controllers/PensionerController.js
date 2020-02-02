@@ -123,6 +123,22 @@ class PensionerController {
             return Response.error(res, 400, "Amount should be a number");
         }
     }
+
+    static async getPaymentHistory(req, res, next) {
+        try {
+
+            const { pensionerID } = req.params
+
+            const pensioner = await Pensioner.findOne({ where: { id: pensionerID } });
+            if (!pensioner) return Response.error(res, 404, "Pensioner does not exist");
+            const paymentHistory = await pensioner.getPaymentHistories();
+
+            return Response.success(res, 200, paymentHistory);
+
+        } catch (error) {
+            return Response.error(res, 404, "Pensioner does not exist");
+        }
+    }
 }
 
 export default PensionerController;
