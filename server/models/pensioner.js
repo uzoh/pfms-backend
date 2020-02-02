@@ -54,7 +54,10 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {});
   Pensioner.associate = function (models) {
-    // associations can be defined here
+    const { PaymentHistory, Pensioner } = models;
+    Pensioner.hasMany(PaymentHistory, {
+      foreignKey: "pensionerID"
+    });
   };
   return Pensioner;
 };
