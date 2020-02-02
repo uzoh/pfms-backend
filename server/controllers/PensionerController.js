@@ -1,7 +1,7 @@
 import { validateUniqueResponse, validationResponse } from "@helpers/validationResponse";
 import models from "@models"
 import Response from "@helpers/Response"
-import { validateCreatePensioner, validateUpdatePensioner } from "@validations/pensioner";
+import { validateCreatePensioner, validateUpdatePensioner, validatePayment } from "@validations/pensioner";
 
 const { Pensioner } = models
 
@@ -95,7 +95,33 @@ class PensionerController {
             }
             next(err);
         }
+    }
 
+    static async pay(req, res, next) {
+        try {
+            const { pensionerID } = req.params
+
+            const paymentDetails = await validatePayment(req.body);
+            const pensioner = await Pensioner.findOne({ where: { id: pensionerID } });
+            if (!pensioner) return Response.error(res, 404, "Pensioner does not exist");
+
+            const payment = await pensioner.createPaymentHistory({
+                accountNumber: pensioner.acctNum,
+                bank: pensioner.bank,
+                ...paymentDetails,
+            });
+
+            return Response.success(res, 200, payment);
+
+        } catch (err) {
+            if (err.isJoi && err.name === 'ValidationError') {
+                return res.status(400).json({
+                    status: 400,
+                    errors: validationResponse(err)
+                });
+            }
+            return Response.error(res, 400, "Amount should be a number");
+        }
     }
 }
 

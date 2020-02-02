@@ -16,6 +16,14 @@ module.exports = {
           key: "id",
         }
       },
+      accountNumber: {
+        allowNull: false,
+        type: Sequelize.DECIMAL
+      },
+      bank: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       amount: {
         allowNull: false,
         type: Sequelize.DECIMAL

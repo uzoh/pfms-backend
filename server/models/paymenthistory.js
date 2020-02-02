@@ -5,6 +5,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false,
     },
+    accountNumber: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+    },
+    bank: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     amount: {
       type: DataTypes.DECIMAL,
       allowNull: false,

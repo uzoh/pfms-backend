@@ -69,3 +69,12 @@ export const validateUpdatePensioner = (pensioner) => {
     };
     return validateSchema(pensioner, schema);
 };
+
+export const validatePayment = (payment) => {
+    const schema = {
+        amount: Joi.string().trim().lowercase().min(2)
+            .max(100)
+            .required()
+    };
+    return validateSchema(payment, schema);
+};
