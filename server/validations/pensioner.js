@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import validateSchema from '../helpers/validateSchema';
+import validateSchema from '../helpers/validateschema';
 
 
 export const validateCreatePensioner = (pensioner) => {
