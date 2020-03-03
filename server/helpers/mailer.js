@@ -5,8 +5,7 @@ import { config } from "dotenv";
 config();
 
 const url = process.env.BASE_URL || "localhost:3000";
-const projectName =
-  process.env.PROJECT_NAME || "Pension Fund Management System";
+const projectName = process.env.PROJECT_NAME || "PFMS";
 const projectEmail = process.env.PROJECT_EMAIL || "info@pfms.com";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -49,4 +48,22 @@ const sendClearanceReceived = (email, name) => {
   });
 };
 
-export { sendClearanceReceived };
+const sendClearanceStatus = (email, name, status) => {
+  const emailBody = {
+    body: {
+      name,
+      title: `<h1 style="text-align: center; color: #000000"> ${projectName} </h1>`,
+      intro: `Hello <b>${name.toUpperCase()}</b>,\n\nYour clearance application has been <b>${status}</b>.`,
+      outro: `If this email was not meant for you, please ignore.`
+    }
+  };
+
+  const message = mailGenerator.generate(emailBody);
+  return sendMail({
+    to: email,
+    subject: `${projectName}: Clearance ${status}`,
+    message
+  });
+};
+
+export { sendClearanceReceived, sendClearanceStatus };

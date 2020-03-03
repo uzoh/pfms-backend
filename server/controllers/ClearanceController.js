@@ -5,7 +5,7 @@ import {
 import models from "@models";
 import Response from "@helpers/Response";
 import { validateClearance } from "@validations/clearance";
-import { sendClearanceReceived } from "@helpers/mailer";
+import { sendClearanceReceived, sendClearanceStatus } from "@helpers/mailer";
 
 const { Clearance, Pensioner, ClearedPensioner } = models;
 
@@ -59,6 +59,27 @@ class ClearanceController {
     try {
       const requests = await Clearance.findAll();
       Response.success(res, 200, requests);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async approve(req, res, next) {
+    try {
+      const { pensionerID } = req.params;
+      const request = await Clearance.findOne({ where: { pensionerID } });
+      if (!request) return Response.error(res, 404, "Clearance does not exist");
+
+      const pensioner = await Pensioner.findOne({ where: { id: pensionerID } });
+      if (!pensioner)
+        return Response.error(res, 404, "Pensioner does not exist");
+
+      const approval = await ClearedPensioner.create({ pensionerID });
+      await Clearance.destroy({ where: { pensionerID } });
+
+      sendClearanceStatus(pensioner.email, pensioner.fullname, "Approved");
+
+      Response.success(res, 200, approval);
     } catch (err) {
       next(err);
     }
