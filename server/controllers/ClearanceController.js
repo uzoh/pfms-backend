@@ -54,6 +54,15 @@ class ClearanceController {
       next(err);
     }
   }
+
+  static async getAllRequests(req, res, next) {
+    try {
+      const requests = await Clearance.findAll();
+      Response.success(res, 200, requests);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export default ClearanceController;
