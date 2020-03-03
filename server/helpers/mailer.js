@@ -68,4 +68,22 @@ const sendClearanceStatus = (email, name, status) => {
   });
 };
 
-export { sendClearanceReceived, sendClearanceStatus };
+const sendPaymentSuccess = (email, name, amount) => {
+  const emailBody = {
+    body: {
+      name,
+      title: `<h1 style="text-align: center; color: #000000"> ${projectName} </h1>`,
+      intro: `Hello <b>${name.toUpperCase()}</b>,\n\nAn amount of <b>N${amount}</b> has just been paid to your account.`,
+      outro: `If this email was not meant for you, please ignore.`
+    }
+  };
+
+  const message = mailGenerator.generate(emailBody);
+  return sendMail({
+    to: email,
+    subject: `${projectName}: Pension Payment`,
+    message
+  });
+};
+
+export { sendClearanceReceived, sendClearanceStatus, sendPaymentSuccess };

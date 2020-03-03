@@ -1,5 +1,5 @@
-import Joi from 'joi';
-import validateSchema from '../helpers/validateschema';
+import Joi from "joi";
+import validateSchema from "../helpers/validateschema";
 
 export const validateCreatePensioner = pensioner => {
   const schema = {
@@ -150,12 +150,7 @@ export const validateUpdatePensioner = pensioner => {
 
 export const validatePayment = payment => {
   const schema = {
-    amount: Joi.string()
-      .trim()
-      .lowercase()
-      .min(2)
-      .max(100)
-      .required()
+    amount: Joi.number().required()
   };
   return validateSchema(payment, schema);
 };
