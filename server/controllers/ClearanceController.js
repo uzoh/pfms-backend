@@ -84,6 +84,26 @@ class ClearanceController {
       next(err);
     }
   }
+
+  static async decline(req, res, next) {
+    try {
+      const { pensionerID } = req.params;
+      const request = await Clearance.findOne({ where: { pensionerID } });
+      if (!request) return Response.error(res, 404, "Clearance does not exist");
+
+      const pensioner = await Pensioner.findOne({ where: { id: pensionerID } });
+      if (!pensioner)
+        return Response.error(res, 404, "Pensioner does not exist");
+
+      await Clearance.destroy({ where: { pensionerID } });
+
+      sendClearanceStatus(pensioner.email, pensioner.fullname, "Declined");
+
+      Response.success(res, 200, {});
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export default ClearanceController;

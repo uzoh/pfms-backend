@@ -53,7 +53,9 @@ const sendClearanceStatus = (email, name, status) => {
     body: {
       name,
       title: `<h1 style="text-align: center; color: #000000"> ${projectName} </h1>`,
-      intro: `Hello <b>${name.toUpperCase()}</b>,\n\nYour clearance application has been <b>${status}</b>.`,
+      intro: `Hello <b>${name.toUpperCase()}</b>,\n\nYour clearance application has been <b>${status}</b>. ${status ===
+        "Declined" &&
+        "Please take a picture of yourself with today's newspaper for verification."}`,
       outro: `If this email was not meant for you, please ignore.`
     }
   };
