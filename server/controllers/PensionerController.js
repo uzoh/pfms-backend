@@ -9,8 +9,9 @@ import {
   validateUpdatePensioner,
   validatePayment
 } from "@validations/pensioner";
+import { sendPaymentSuccess } from "@helpers/mailer";
 
-const { Pensioner } = models;
+const { Pensioner, ClearedPensioner } = models;
 
 class PensionerController {
   static async create(req, res, next) {
@@ -110,11 +111,26 @@ class PensionerController {
       if (!pensioner)
         return Response.error(res, 404, "Pensioner does not exist");
 
+      const cleared = await ClearedPensioner.findOne({
+        where: { pensionerID }
+      });
+
+      if (!cleared)
+        return Response.error(res, 400, "Pensioner is not cleared to be paid");
+
       const payment = await pensioner.createPaymentHistory({
         accountNumber: pensioner.acctNum,
         bank: pensioner.bank,
         ...paymentDetails
       });
+
+      sendPaymentSuccess(
+        pensioner.email,
+        pensioner.fullname,
+        paymentDetails.amount
+      );
+
+      cleared.destroy();
 
       return Response.success(res, 200, payment);
     } catch (err) {
@@ -124,6 +140,7 @@ class PensionerController {
           errors: validationResponse(err)
         });
       }
+      console.log(err);
       return Response.error(res, 400, "Amount should be a number");
     }
   }
