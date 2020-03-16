@@ -57,7 +57,9 @@ class ClearanceController {
 
   static async getAllRequests(req, res, next) {
     try {
-      const requests = await Clearance.findAll();
+      const requests = await Clearance.findAll({
+        include: [{ model: Pensioner }]
+      });
       Response.success(res, 200, requests);
     } catch (err) {
       next(err);
