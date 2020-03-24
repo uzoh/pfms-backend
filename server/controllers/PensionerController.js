@@ -162,7 +162,15 @@ class PensionerController {
 
   static async getallcleared(req, res, next) {
     try {
-      const pensioner = await Pensioner.findAll();
+      const pensioner = await ClearedPensioner.findAll({
+        include: [
+          {
+            model: Pensioner,
+            as: "pensioner",
+            attributes: ["fullname", "profileImage", "email"]
+          }
+        ]
+      });
       return Response.success(res, 200, pensioner);
     } catch (error) {
       return Response.error(res, 500, error);
