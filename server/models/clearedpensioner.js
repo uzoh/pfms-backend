@@ -10,8 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  ClearedPensioner.associate = function(models) {
-    // associations can be defined here
+  ClearedPensioner.associate = (models) => {
+    const { Pensioner } = models;
+    ClearedPensioner.belongsTo(Pensioner, {
+      foreignKey: "pensionerID",
+      as: "pensioner"
+    });
   };
   return ClearedPensioner;
 };

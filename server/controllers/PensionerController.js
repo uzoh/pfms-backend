@@ -159,6 +159,23 @@ class PensionerController {
       return Response.error(res, 404, "Pensioner does not exist");
     }
   }
+
+  static async getallcleared(req, res, next) {
+    try {
+      const pensioner = await ClearedPensioner.findAll({
+        include: [
+          {
+            model: Pensioner,
+            as: "pensioner",
+            attributes: ["fullname", "profileImage", "email"]
+          }
+        ]
+      });
+      return Response.success(res, 200, pensioner);
+    } catch (error) {
+      return Response.error(res, 500, error);
+    }
+  }
 }
 
 export default PensionerController;
